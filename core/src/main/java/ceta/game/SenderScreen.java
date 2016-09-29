@@ -19,6 +19,9 @@ public class SenderScreen implements Screen {
     private Stage stage;
 
     private boolean paused;
+    
+    
+    
 
     public SenderScreen (Game game) {
         this.game = game;

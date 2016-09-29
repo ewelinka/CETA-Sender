@@ -27,12 +27,11 @@ public class WorldController extends InputAdapter implements Disposable {
 
     public WorldController (Game game, Stage stage) {
         this.stage = stage;
-        virtualBlocksManager = new VirtualBlocksManager(stage);
+        virtualBlocksManager = new VirtualBlocksManager(stage, ((CetaSender)game).getMessageSender());
         init(game);
         localInit();
-
     }
-
+    
     private void localInit () {
         level = new Level(stage);
 

@@ -1,5 +1,7 @@
 package ceta.game;
 
+import ceta.game.osc.OSCMessageSender;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
@@ -12,6 +14,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class CetaSender extends Game {
 	SpriteBatch batch;
 	Texture img;
+
+	OSCMessageSender messageSender;
+	
+	public CetaSender(String ip, int port){
+		this.messageSender = new OSCMessageSender(ip, port);
+
+	}
 	
 	@Override
 	public void create () {
@@ -21,4 +30,14 @@ public class CetaSender extends Game {
 
 	}
 
+	public OSCMessageSender getMessageSender() {
+		return messageSender;
+	}
+
+	public void setMessageSender(OSCMessageSender messageSender) {
+		this.messageSender = messageSender;
+	}
+
+	
+	
 }

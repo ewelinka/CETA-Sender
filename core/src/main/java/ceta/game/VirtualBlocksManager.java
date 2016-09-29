@@ -1,11 +1,13 @@
 package ceta.game;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import ceta.game.osc.OSCMessageSender;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by ewe on 9/23/16.
@@ -20,10 +22,16 @@ public class VirtualBlocksManager {
     private short [] detected_blocks = {0,0,0,0,0};
 
 
+    private OSCMessageSender messageSender;
+    
     public VirtualBlocksManager(Stage stage){
         this.stage = stage;
     }
 
+    public VirtualBlocksManager(Stage stage, OSCMessageSender messageSender){
+    	this.stage = stage;
+    	this.messageSender = messageSender;
+    }
 
     public void init(){
 
@@ -83,6 +91,7 @@ public class VirtualBlocksManager {
                         // TODO perhaps change alpha and die...
                         blockRemoved(vBlock.getBlockValue());
                         removeVirtualBlock(i);
+                        sendRemoveBlockMessage(vBlock.getBlockValue());
                     }
                 }else{
                     if( polygon.getTransformedVertices()[1] > Constants.DETECTION_LIMIT){
@@ -91,6 +100,7 @@ public class VirtualBlocksManager {
                         addBlock(vBlock.getBlockValue());
                         // new virtual block in empty space
                         addVirtualBlock(vBlock.getBlockValue());
+                        sendAddBlockMessage(vBlock, polygon);
                     }
                     else{
                         vBlock.goHome();
@@ -103,7 +113,8 @@ public class VirtualBlocksManager {
 
     }
 
-    private void checkMargins(){
+  
+	private void checkMargins(){
         //check up
         if (polygon.getTransformedVertices()[5] + margin > 0){
             //if (virtualBlocksOnStage.get(i).getY() + virtualBlocksOnStage.get(i).getHeight() + margin > 0){
@@ -179,4 +190,29 @@ public class VirtualBlocksManager {
     public short[] getDetectedBlocks() {
         return Arrays.copyOf(detected_blocks,detected_blocks.length);
     }
+    
+    private void sendRemoveBlockMessage(int blockId){
+    	ArrayList<Object> collectionToSend = new ArrayList<Object>();
+    	collectionToSend.add("removeBlock");
+    	collectionToSend.add(blockId);  	
+
+    	this.messageSender.sendMessage(collectionToSend, "/wizardOfOz");
+    }
+    
+    private void sendAddBlockMessage(VirtualBlock block, Polygon polygon2) {
+    	
+    	ArrayList<Object> collectionToSend = new ArrayList<Object>();
+    	collectionToSend.add("addBlock");
+    	collectionToSend.add((int)block.getBlockValue());
+    	collectionToSend.add(polygon2.getOriginX());
+    	collectionToSend.add(polygon2.getOriginY());
+    	collectionToSend.add(polygon2.getRotation());
+    	
+    	for(int i=0;i< polygon2.getVertices().length;i++){
+        	collectionToSend.add(polygon2.getVertices()[i]);
+    	}
+
+    	this.messageSender.sendMessage(collectionToSend, "/wizardOfOz");
+  	}
+
 }
