@@ -38,6 +38,12 @@ public class CetaSender extends Game {
 		this.messageSender = messageSender;
 	}
 
-	
+	public void updateSenderIp(String ip) {
+		this.messageSender.updateTargetIp(ip);
+	}
+
+	public void showInputIpAddress(){
+		
+	}
 	
 }

@@ -12,9 +12,7 @@ import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 
 public class OSCMessageSender {
 
-	private OSCPortOut portOut;
-	private String address = "/cetaTUIEvent";
-	
+	private OSCPortOut portOut;	
 	public OSCMessageSender(String ip, int port){
 		try {
 			this.portOut = new OSCPortOut(InetAddress.getByName(ip), port);
@@ -27,8 +25,6 @@ public class OSCMessageSender {
 	
 	public void sendMessage(Collection<Object> elementsToSend, String address){
 		if (portOut != null) {
-	         
-
 	          /* The version of JavaOSC from the Maven Repository is slightly different from the one
 	           * from the download link on the main website at the time of writing this tutorial.
 	           *
@@ -50,6 +46,16 @@ public class OSCMessageSender {
 	        	  e.printStackTrace();
 	          }
 	        }
+	}
+
+	public void updateTargetIp(String ip) {
+		try {
+			this.portOut = new OSCPortOut(InetAddress.getByName(ip),12345);
+		} catch (SocketException e) {
+			e.printStackTrace();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

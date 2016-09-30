@@ -1,33 +1,56 @@
 package ceta.game.android;
 
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.text.format.Formatter;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import ceta.game.CetaSender;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.illposed.osc.OSCListener;
-import com.illposed.osc.OSCMessage;
-import com.illposed.osc.OSCPortIn;
-import com.illposed.osc.OSCPortOut;
 
 public class CetaSenderActivity extends AndroidApplication {
 	
-	private CetaSender cs;
+    private static final String TAG = CetaSenderActivity.class.getName();
+
+	private CetaSender cetaSender;
+	MenuItem mSetIpItem;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
-			
-			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-			initialize(createCetaSender(), config);
-			
+		super.onCreate(savedInstanceState);
+		
+		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		this.cetaSender=createCetaSender();
+		initialize(this.cetaSender, config);
 	}
 	
 	private CetaSender createCetaSender(){
-//		WifiManager wm = (WifiManager)getSystemService(WIFI_SERVICE);
-//		String myIP = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-		//return new CetaSender(myIP, 12345);
 		return new CetaSender("192.168.1.43", 12345); //this is the IP of the target device
+	}
+	
+	
+	
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        Log.i(TAG, "called onCreateOptionsMenu");
+        mSetIpItem = menu.add("Set Target Ip");
+        return true;
+    }
+	
+	
+	public boolean onOptionsItemSelected(MenuItem item){
+        Log.i(TAG, "called onOptionsItemSelected; selected item: " + item);
+        if (item == mSetIpItem) {
+        	//TODO display input for target ip and call updateTargetIp
+        } 
+        return true;
+    }
+	
+	
+	
+	
+	private void updateTargetIp(String ip){
+		this.cetaSender.updateSenderIp(ip);
 	}
 }
