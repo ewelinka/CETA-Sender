@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import ceta.game.CetaInput;
 import ceta.game.CetaSender;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -42,7 +43,7 @@ public class CetaSenderActivity extends AndroidApplication {
 	public boolean onOptionsItemSelected(MenuItem item){
         Log.i(TAG, "called onOptionsItemSelected; selected item: " + item);
         if (item == mSetIpItem) {
-        	//TODO display input for target ip and call updateTargetIp
+        	this.cetaSender.showInputIpAddress();
         } 
         return true;
     }

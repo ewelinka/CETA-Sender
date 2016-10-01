@@ -3,11 +3,9 @@ package ceta.game;
 import ceta.game.osc.OSCMessageSender;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -15,8 +13,11 @@ public class CetaSender extends Game {
 	SpriteBatch batch;
 	Texture img;
 
+    private static final String TAG = CetaSender.class.getName();
+
+    
 	OSCMessageSender messageSender;
-	
+	SenderScreen senderScreen;
 	public CetaSender(String ip, int port){
 		this.messageSender = new OSCMessageSender(ip, port);
 
@@ -26,7 +27,8 @@ public class CetaSender extends Game {
 	public void create () {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		Assets.instance.init(new AssetManager());
-		setScreen(new SenderScreen(this));
+		this.senderScreen = new SenderScreen(this);
+		setScreen(this.senderScreen);
 
 	}
 
@@ -43,7 +45,13 @@ public class CetaSender extends Game {
 	}
 
 	public void showInputIpAddress(){
-		
+		CetaInput cetaInput = new CetaInput(this);
+		cetaInput.show();
+	}
+	
+	
+	public SenderScreen getSenderScreen(){
+		return this.senderScreen;
 	}
 	
 }
