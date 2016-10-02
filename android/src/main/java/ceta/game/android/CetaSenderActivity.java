@@ -47,11 +47,4 @@ public class CetaSenderActivity extends AndroidApplication {
         } 
         return true;
     }
-	
-	
-	
-	
-	private void updateTargetIp(String ip){
-		this.cetaSender.updateSenderIp(ip);
-	}
 }

@@ -1,5 +1,7 @@
 package ceta.game;
 
+import ceta.game.actors.ActionSubmitTrigger;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -19,6 +21,8 @@ public class WorldController extends InputAdapter implements Disposable {
     public Game game;
     private Stage stage;
     private VirtualBlocksManager virtualBlocksManager;
+    
+    private ActionSubmitTrigger actionSubmitTriggerButton;
 
     public short [] detected_numbers;
     public short [] previous_detected;
@@ -35,7 +39,12 @@ public class WorldController extends InputAdapter implements Disposable {
     private void localInit () {
         level = new Level(stage);
 
+        //smarichal add the button to trigger the action submit countdown.
+        this.actionSubmitTriggerButton = new ActionSubmitTrigger(5, false);
+        stage.addActor(this.actionSubmitTriggerButton);
+        
         virtualBlocksManager.init();
+        
 
     }
 
