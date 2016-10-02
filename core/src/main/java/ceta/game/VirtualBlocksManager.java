@@ -204,13 +204,13 @@ public class VirtualBlocksManager {
     	ArrayList<Object> collectionToSend = new ArrayList<Object>();
     	collectionToSend.add("addBlock");
     	collectionToSend.add((int)block.getBlockValue());
-    	collectionToSend.add(polygon2.getOriginX());
-    	collectionToSend.add(polygon2.getOriginY());
-    	collectionToSend.add(polygon2.getRotation());
+    	collectionToSend.add(block.getX());
+    	collectionToSend.add(block.getY());
+    	collectionToSend.add(block.getRotation());
     	
-    	for(int i=0;i< polygon2.getVertices().length;i++){
-        	collectionToSend.add(polygon2.getVertices()[i]);
-    	}
+//    	for(int i=0;i< polygon2.getVertices().length;i++){
+//        	collectionToSend.add(polygon2.getVertices()[i]);
+//    	}
 
     	this.messageSender.sendMessage(collectionToSend, "/wizardOfOz");
   	}
