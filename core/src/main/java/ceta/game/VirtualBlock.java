@@ -26,11 +26,7 @@ public class VirtualBlock extends Actor {
     public Vector2 home;
     private boolean wasDetected;
     public float[] vertices;
-    //private float previousRotation =0;
-    private float baseRotation =0;
-    private float temporalRotation =0;
-
-
+    private float rotLast = 0;
     private int id;
     
     private boolean wasMoved;
@@ -97,7 +93,6 @@ public class VirtualBlock extends Actor {
             //
             @Override
             public void pinch(InputEvent event, Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2)  {
-                //Actor actor = event.getListenerActor();
 
                 Vector2 a = initialPointer2.sub(initialPointer1);
                 Vector2 b = pointer2.sub(pointer1);
@@ -105,23 +100,23 @@ public class VirtualBlock extends Actor {
                 b = b.nor();
                 float deltaRot = (float)(Math.atan2(b.y,b.x) - Math.atan2(a.y,a.x));
                 float deltaRotDeg = (float)(((deltaRot*180)/Math.PI + 360) % 360);
-                temporalRotation = deltaRotDeg;
 
-                if(deltaRotDeg>0){
-                    setRotation((baseRotation + deltaRotDeg)%360);
-                    //Gdx.app.log(TAG,"--- "+deltaRot+" "+getRotation());
-                }
+                if(deltaRotDeg>180) deltaRotDeg = -360 + deltaRotDeg;
+
+                rotateBy(deltaRotDeg - rotLast);
+                rotLast = deltaRotDeg;
+
             }
 
             @Override
             public void touchDown(InputEvent event, float x, float y, int pointer, int button){
-                baseRotation = getRotation();
                 Gdx.app.debug(TAG, "isTouched!!!");
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button){
-                baseRotation = (baseRotation + temporalRotation)%360;
+                rotLast = 0;
+
                 wasMoved = true;
                 Gdx.app.debug(TAG, "wasMoved!!! " + blockValue);
             }

@@ -20,6 +20,7 @@ public class VirtualBlocksManager {
     VirtualBlock vBlock;
     private ArrayList<VirtualBlock> virtualBlocksOnStage;
     private short [] detected_blocks = {0,0,0,0,0};
+    private int lastId = 1;
 
 
     private OSCMessageSender messageSender;
@@ -47,6 +48,7 @@ public class VirtualBlocksManager {
         // we initialise first 5 blocks (numbres 1-5)
         for(short i=1;i<=5;i++){
             addVirtualBlock(i);
+
 
         }
     }
@@ -89,9 +91,13 @@ public class VirtualBlocksManager {
                     if( polygon.getTransformedVertices()[1] < Constants.DETECTION_LIMIT){
                         // was detected but now gone
                         // TODO perhaps change alpha and die...
+                        sendRemoveBlockMessage(vBlock.getId()); // first we notify
                         blockRemoved(vBlock.getBlockValue());
                         removeVirtualBlock(i);
-                        sendRemoveBlockMessage(vBlock.getBlockValue(), vBlock.getId());
+
+                    }
+                    else{
+                        sendUpdateBlockMessage(vBlock);
                     }
                 }else{
                     if( polygon.getTransformedVertices()[1] > Constants.DETECTION_LIMIT){
@@ -100,7 +106,7 @@ public class VirtualBlocksManager {
                         addBlock(vBlock.getBlockValue());
                         // new virtual block in empty space
                         addVirtualBlock(vBlock.getBlockValue());
-                        sendAddBlockMessage(vBlock, polygon);
+                        sendAddBlockMessage(vBlock);
                     }
                     else{
                         vBlock.goHome();
@@ -173,6 +179,8 @@ public class VirtualBlocksManager {
         VirtualBlock virtualBlock = new VirtualBlock(val,this);
         // this works for vertical blocks
         virtualBlock.setPosition(-260 + 2*Constants.BASE*val ,-Constants.BASE*12);
+        virtualBlock.setId(lastId);
+        lastId +=1;
 
 //            virtualBlock.setPosition(
 //                    -virtualBlock.getWidth()/2,
@@ -191,16 +199,15 @@ public class VirtualBlocksManager {
         return Arrays.copyOf(detected_blocks,detected_blocks.length);
     }
     
-    private void sendRemoveBlockMessage(short blockValue, int blockId){
+    private void sendRemoveBlockMessage(int blockId){
     	ArrayList<Object> collectionToSend = new ArrayList<Object>();
     	collectionToSend.add("removeBlock");
-    	collectionToSend.add(blockValue);
     	collectionToSend.add(blockId);
 
     	this.messageSender.sendMessage(collectionToSend, "/wizardOfOz");
     }
     
-    private void sendAddBlockMessage(VirtualBlock block, Polygon polygon2) {
+    private void sendAddBlockMessage(VirtualBlock block) {
     	
     	ArrayList<Object> collectionToSend = new ArrayList<Object>();
     	collectionToSend.add("addBlock");
@@ -218,7 +225,7 @@ public class VirtualBlocksManager {
   	}
     
 //TODO Ewe, hay que invocar esta funcion en el momento adecuado
-private void sendUpdateBlockMessage(VirtualBlock block, Polygon polygon2) {
+private void sendUpdateBlockMessage(VirtualBlock block) {
     	
     	ArrayList<Object> collectionToSend = new ArrayList<Object>();
     	collectionToSend.add("updateBlock");
