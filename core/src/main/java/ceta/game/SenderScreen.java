@@ -1,9 +1,22 @@
 package ceta.game;
 
+import ceta.game.actors.ActionSubmitTrigger;
+
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /**
@@ -18,14 +31,16 @@ public class SenderScreen implements Screen {
     private OrthographicCamera camera;
     private Stage stage;
 
+    private Skin skin;
     private boolean paused;
-    
+	private TextButton btnTrigger;
+    private ActionSubmitTrigger actionSubmit;
     
     
 
     public SenderScreen (Game game) {
         this.game = game;
-
+        this.actionSubmit = new ActionSubmitTrigger(5, false);
     }
 
 
@@ -36,6 +51,7 @@ public class SenderScreen implements Screen {
         worldController = new WorldController(game, stage);
         // Todo here we should make camera stuff and fitviewport
         worldRenderer = new WorldRenderer(worldController,stage);
+        stage.addActor(buildButton());
         // android back key
         Gdx.input.setCatchBackKey(true);
         Gdx.input.setInputProcessor(getInputProcessor());
@@ -88,4 +104,45 @@ public class SenderScreen implements Screen {
         multiplexer.addProcessor(worldController);
         return multiplexer;
     }
+    
+    
+    private Table buildButton () {
+        /// ------------------ start -- just to create a simple button!! what a caos!!
+        skin = new Skin();
+        // Generate a 1x1 white texture and store it in the skin named "white".
+        Pixmap pixmap = new Pixmap(140, 70, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.GREEN);
+        pixmap.fill();
+        skin.add("white", new Texture(pixmap));
+        // Store the default libgdx font under the name "default".
+        BitmapFont bfont=new BitmapFont();
+        bfont.getData().scale(2);
+        // bfont.scale(1);
+        skin.add("default",bfont);
+        // Configure a TextButtonStyle and name it "default". Skin resources are stored by type, so this doesn't overwrite the font.
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.up = skin.newDrawable("white", Color.DARK_GRAY);
+        textButtonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
+        textButtonStyle.checked = skin.newDrawable("white", Color.BLUE);
+        textButtonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
+        textButtonStyle.font = skin.getFont("default");
+        skin.add("default", textButtonStyle);
+        /// ------------------ end --
+        btnTrigger=new TextButton("ActSub",textButtonStyle);
+
+        Table tbl = new Table();
+        //tbl.left().bottom();
+        tbl.add(btnTrigger).align(Align.top);
+        tbl.setPosition(-120 , 50);
+        btnTrigger.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                actionSubmit.trigger();
+            }
+        });
+                
+        return tbl;
+    }
+    
+    
 }

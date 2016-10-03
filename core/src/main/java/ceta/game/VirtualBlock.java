@@ -31,6 +31,8 @@ public class VirtualBlock extends Actor {
     private float temporalRotation =0;
 
 
+    private int id;
+    
     private boolean wasMoved;
     private VirtualBlocksManager virtualBlocksManager;
 
@@ -257,6 +259,14 @@ public class VirtualBlock extends Actor {
                 regTex.getRegionWidth(), regTex.getRegionHeight(), false,false);
         batch.setColor(1,1,1,1);
     }
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 //
 //    @Override

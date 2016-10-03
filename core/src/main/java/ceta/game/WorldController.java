@@ -41,8 +41,6 @@ public class WorldController extends InputAdapter implements Disposable {
 
         //smarichal add the button to trigger the action submit countdown.
         this.actionSubmitTriggerButton = new ActionSubmitTrigger(5, false);
-        stage.addActor(this.actionSubmitTriggerButton);
-        
         virtualBlocksManager.init();
         
 

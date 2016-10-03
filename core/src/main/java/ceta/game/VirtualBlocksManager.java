@@ -91,7 +91,7 @@ public class VirtualBlocksManager {
                         // TODO perhaps change alpha and die...
                         blockRemoved(vBlock.getBlockValue());
                         removeVirtualBlock(i);
-                        sendRemoveBlockMessage(vBlock.getBlockValue());
+                        sendRemoveBlockMessage(vBlock.getBlockValue(), vBlock.getId());
                     }
                 }else{
                     if( polygon.getTransformedVertices()[1] > Constants.DETECTION_LIMIT){
@@ -191,10 +191,11 @@ public class VirtualBlocksManager {
         return Arrays.copyOf(detected_blocks,detected_blocks.length);
     }
     
-    private void sendRemoveBlockMessage(int blockId){
+    private void sendRemoveBlockMessage(short blockValue, int blockId){
     	ArrayList<Object> collectionToSend = new ArrayList<Object>();
     	collectionToSend.add("removeBlock");
-    	collectionToSend.add(blockId);  	
+    	collectionToSend.add(blockValue);
+    	collectionToSend.add(blockId);
 
     	this.messageSender.sendMessage(collectionToSend, "/wizardOfOz");
     }
@@ -204,6 +205,7 @@ public class VirtualBlocksManager {
     	ArrayList<Object> collectionToSend = new ArrayList<Object>();
     	collectionToSend.add("addBlock");
     	collectionToSend.add((int)block.getBlockValue());
+    	collectionToSend.add(block.getId());
     	collectionToSend.add(block.getX());
     	collectionToSend.add(block.getY());
     	collectionToSend.add(block.getRotation());
@@ -214,5 +216,21 @@ public class VirtualBlocksManager {
 
     	this.messageSender.sendMessage(collectionToSend, "/wizardOfOz");
   	}
+    
+//TODO Ewe, hay que invocar esta funcion en el momento adecuado
+private void sendUpdateBlockMessage(VirtualBlock block, Polygon polygon2) {
+    	
+    	ArrayList<Object> collectionToSend = new ArrayList<Object>();
+    	collectionToSend.add("updateBlock");
+    	collectionToSend.add((int)block.getBlockValue());
+    	collectionToSend.add(block.getId());
+    	collectionToSend.add(block.getX());
+    	collectionToSend.add(block.getY());
+    	collectionToSend.add(block.getRotation());
+
+    	this.messageSender.sendMessage(collectionToSend, "/wizardOfOz");
+  	}
+
+
 
 }
