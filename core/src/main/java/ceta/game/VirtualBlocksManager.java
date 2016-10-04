@@ -224,7 +224,6 @@ public class VirtualBlocksManager {
     	this.messageSender.sendMessage(collectionToSend, "/wizardOfOz");
   	}
     
-//TODO Ewe, hay que invocar esta funcion en el momento adecuado
 private void sendUpdateBlockMessage(VirtualBlock block) {
     	
     	ArrayList<Object> collectionToSend = new ArrayList<Object>();

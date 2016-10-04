@@ -22,8 +22,6 @@ public class WorldController extends InputAdapter implements Disposable {
     private Stage stage;
     private VirtualBlocksManager virtualBlocksManager;
     
-    private ActionSubmitTrigger actionSubmitTriggerButton;
-
     public short [] detected_numbers;
     public short [] previous_detected;
     public short currentDiff;
@@ -38,12 +36,7 @@ public class WorldController extends InputAdapter implements Disposable {
     
     private void localInit () {
         level = new Level(stage);
-
-        //smarichal add the button to trigger the action submit countdown.
-        this.actionSubmitTriggerButton = new ActionSubmitTrigger(5, false);
         virtualBlocksManager.init();
-        
-
     }
 
     public void init (Game game) {

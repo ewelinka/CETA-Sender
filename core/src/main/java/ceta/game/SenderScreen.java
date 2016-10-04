@@ -1,8 +1,16 @@
 package ceta.game;
 
-import ceta.game.actors.ActionSubmitTrigger;
+import java.util.Collection;
+import java.util.LinkedList;
 
-import com.badlogic.gdx.*;
+import ceta.game.actors.ActionSubmitTrigger;
+import ceta.game.interfaces.ActionSubmitCallbackInterface;
+
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -15,7 +23,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -40,7 +47,7 @@ public class SenderScreen implements Screen {
 
     public SenderScreen (Game game) {
         this.game = game;
-        this.actionSubmit = new ActionSubmitTrigger(5, false);
+        this.actionSubmit = new ActionSubmitTrigger(5000, false);
     }
 
 
@@ -51,7 +58,7 @@ public class SenderScreen implements Screen {
         worldController = new WorldController(game, stage);
         // Todo here we should make camera stuff and fitviewport
         worldRenderer = new WorldRenderer(worldController,stage);
-        stage.addActor(buildButton());
+        stage.addActor(buildActionSubmitButton());
         // android back key
         Gdx.input.setCatchBackKey(true);
         Gdx.input.setInputProcessor(getInputProcessor());
@@ -106,7 +113,7 @@ public class SenderScreen implements Screen {
     }
     
     
-    private Table buildButton () {
+    private Table buildActionSubmitButton () {
         /// ------------------ start -- just to create a simple button!! what a caos!!
         skin = new Skin();
         // Generate a 1x1 white texture and store it in the skin named "white".
@@ -137,12 +144,38 @@ public class SenderScreen implements Screen {
         btnTrigger.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                actionSubmit.trigger();
+            	if(!actionSubmit.isTriggered()){
+            		btnTrigger.setText("Cancel");
+            		actionSubmit.trigger(new ActionSubmitCallbackInterface() {
+						@Override
+						public void onActionSubmitFinished() {
+							Gdx.app.log(TAG, "***** en el callback ****");
+							btnTrigger.setText("ActSub");
+						}
+					});
+            		sendOSCStartActionSubmitCountdown();
+            		
+            	}else{
+            		actionSubmit.cancel();
+            		sendOSCCancelActionSubmitCountdown();
+            	}
             }
         });
                 
         return tbl;
     }
     
+    
+    private void sendOSCStartActionSubmitCountdown() {
+    	Collection<Object> elementsToSend = new LinkedList<Object>();
+    	elementsToSend.add("startCountdown");
+    	((CetaSender)game).getMessageSender().sendMessage(elementsToSend, "/wizardOfOz");
+	}
+    
+    private void sendOSCCancelActionSubmitCountdown() {
+    	Collection<Object> elementsToSend = new LinkedList<Object>();
+    	elementsToSend.add("cancelCountdown");
+    	((CetaSender)game).getMessageSender().sendMessage(elementsToSend, "/wizardOfOz");
+	}
     
 }
