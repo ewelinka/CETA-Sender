@@ -40,7 +40,7 @@ public class SenderScreen implements Screen {
 
     private Skin skin;
     private boolean paused;
-	private TextButton btnTrigger;
+	private TextButton btnTrigger, btnSetIp;
     private ActionSubmitTrigger actionSubmit;
     
     
@@ -117,13 +117,13 @@ public class SenderScreen implements Screen {
         /// ------------------ start -- just to create a simple button!! what a caos!!
         skin = new Skin();
         // Generate a 1x1 white texture and store it in the skin named "white".
-        Pixmap pixmap = new Pixmap(140, 70, Pixmap.Format.RGBA8888);
+        Pixmap pixmap = new Pixmap(100, 40, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.GREEN);
         pixmap.fill();
         skin.add("white", new Texture(pixmap));
         // Store the default libgdx font under the name "default".
         BitmapFont bfont=new BitmapFont();
-        bfont.getData().scale(2);
+       // bfont.getData().scale(2);
         // bfont.scale(1);
         skin.add("default",bfont);
         // Configure a TextButtonStyle and name it "default". Skin resources are stored by type, so this doesn't overwrite the font.
@@ -137,10 +137,14 @@ public class SenderScreen implements Screen {
         /// ------------------ end --
         btnTrigger=new TextButton("ActSub",textButtonStyle);
 
+        btnSetIp =new TextButton("SetIP",textButtonStyle);
+        
         Table tbl = new Table();
         //tbl.left().bottom();
         tbl.add(btnTrigger).align(Align.top);
-        tbl.setPosition(-120 , 50);
+        tbl.add(btnSetIp).align(Align.top);
+        tbl.setPosition(-80 , 50);
+        
         btnTrigger.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -161,7 +165,16 @@ public class SenderScreen implements Screen {
             	}
             }
         });
-                
+           
+        
+        btnSetIp.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+            	((CetaSender)game).showInputIpAddress();
+            }
+        });
+        
+        
         return tbl;
     }
     
